@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { NuiProvider, useNuiEvent } from 'react-fivem-hooks';
-import { Link, NavLink, useHistory, useLocation } from 'react-router-dom';
+import { Link, NavLink, Route, useHistory, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { IPhoneSettings } from '@project-error/npwd-types';
@@ -9,14 +9,15 @@ import {
   Theme,
   StyledEngineProvider,
   Paper,
-  Typography,
   BottomNavigation,
   BottomNavigationAction,
 } from '@mui/material';
 import ThemeSwitchProvider from './ThemeSwitchProvider';
-import { HomeRounded, InfoRounded } from '@mui/icons-material';
+import { AddRounded, ListAltRounded } from '@mui/icons-material';
 import Header, { HEADER_HEIGHT } from './components/Header';
 import { path } from '../npwd.config';
+import Advertisements from './views/Advertisements';
+import Create from './views/Create';
 
 const Container = styled(Paper)`
   flex: 1;
@@ -52,10 +53,6 @@ interface AppProps {
 }
 
 const App = (props: AppProps) => {
-  const history = useHistory();
-  const [count, setCount] = useState(0);
-  const { data } = useNuiEvent<string>({ event: 'RANDOM' });
-
   const { pathname } = useLocation();
   const [page, setPage] = useState(pathname);
 
@@ -67,48 +64,31 @@ const App = (props: AppProps) => {
     <StyledEngineProvider injectFirst>
       <ThemeSwitchProvider mode={props.theme.palette.mode}>
         <Container square elevation={0}>
-          <Header>Template app</Header>
+          <Header>Advertisements</Header>
           <Content>
-            <button onClick={() => history.push('/')} style={{ alignSelf: 'flex-start' }}>
-              Back
-            </button>
-
-            <div>
-              <h1>Template app - Heading 1</h1>
-              <h2>Data from client: {data}</h2>
-              <h3>You are at {page}</h3>
-
-              <p>Language is: {props.settings.language.label}</p>
-
-              <div>
-                <button onClick={() => setCount((prev) => prev + 1)}>+</button>
-                <button>{count}</button>
-                <button onClick={() => setCount((prev) => prev - 1)}>-</button>
-              </div>
-            </div>
-
-            <Footer>
-              <LinkItem to="/">
-                <Typography>Home</Typography>
-              </LinkItem>
-            </Footer>
+            <Route exact path={path}>
+              <Advertisements />
+            </Route>
+            <Route path={`${path}/create`}>
+              <Create />
+            </Route>
           </Content>
 
           <BottomNavigation value={page} onChange={handleChange} showLabels>
             <BottomNavigationAction
-              label={'Home'}
-              value="/home"
+              label={'Advertisements'}
+              value={path}
               component={NavLink}
-              icon={<HomeRounded />}
+              icon={<ListAltRounded />}
               to={path}
             />
             <BottomNavigationAction
-              label={'About'}
-              value="/about"
+              label={'Create'}
+              value={`${path}/create`}
               color="secondary"
               component={NavLink}
-              icon={<InfoRounded />}
-              to={path}
+              icon={<AddRounded />}
+              to={`${path}/create`}
             />
           </BottomNavigation>
         </Container>

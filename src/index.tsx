@@ -17,7 +17,8 @@ import { NuiProvider } from 'react-fivem-hooks';
 import { RecoilRoot } from 'recoil';
 import { IPhoneSettings } from '@project-error/npwd-types';
 import i18next from 'i18next';
-import { createTheme } from '@mui/material';
+import { createTheme, Stack } from '@mui/material';
+import { darkTheme, lightTheme } from './app.theme';
 
 const Container = styled.div`
   position: relative;
@@ -61,12 +62,6 @@ const settings = {
   },
 } as IPhoneSettings;
 
-const theme = createTheme({
-  palette: {
-    mode: 'light',
-  },
-});
-
 /*
  *   Providers loaded here will only be applied to the development environment.
  *   If you want to add more providers to the actual app inside NPWD you have to add them in APP.tsx.
@@ -80,14 +75,25 @@ const Root = () => {
   return (
     <HashRouter>
       <RecoilRoot>
-        <NuiProvider>
-          <Container>
-            <Background src={image} />
-            <AppContainer>
-              <App settings={settings} i18n={i18next} theme={theme} />
-            </AppContainer>
-          </Container>
-        </NuiProvider>
+        <React.Suspense fallback="lmao dud">
+          <NuiProvider>
+            <Stack direction="row" spacing={5}>
+              <Container>
+                <Background src={image} />
+                <AppContainer>
+                  <App settings={settings} i18n={i18next} theme={createTheme(lightTheme)} />
+                </AppContainer>
+              </Container>
+
+              <Container>
+                <Background src={image} />
+                <AppContainer>
+                  <App settings={settings} i18n={i18next} theme={createTheme(darkTheme)} />
+                </AppContainer>
+              </Container>
+            </Stack>
+          </NuiProvider>
+        </React.Suspense>
       </RecoilRoot>
     </HashRouter>
   );

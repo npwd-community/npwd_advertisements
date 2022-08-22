@@ -1,5 +1,5 @@
 {
-  "name": "npwd_default_template_app",
+  "name": "npwd_advertisements",
   "version": "0.0.0",
   "private": true,
   "devDependencies": {
@@ -39,7 +39,8 @@
     "watch": "concurrently \"yarn watch:client\" \"yarn watch:server\"  \"yarn watch:nui\"",
     "watch:nui": "esbuild src/index.tsx --outdir=dist/html --watch --target=es6 --bundle --loader:.png=dataurl",
     "watch:client": "esbuild client/client.ts --bundle --watch --outfile=dist/client.js",
-    "watch:server": "esbuild server/server.ts --bundle --sourcemap --platform=node --watch --outfile=dist/server.js"
+    "watch:server": "esbuild server/server.ts --bundle --sourcemap --platform=node --watch --outfile=dist/server.js",
+    "dev:server": "esbuild server/server.ts --bundle --platform=node --outfile=dist/server.js && node dist/server.js"
   },
   "dependencies": {
     "@emotion/react": "^11.7.0",
@@ -50,14 +51,18 @@
     "esbuild": "^0.14.23",
     "eslint": "^8.10.0",
     "file-loader": "^6.2.0",
+    "fivem-mock-server": "^0.0.0-3",
     "i18next": "^21.8.16",
     "prettier": "^2.5.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-fivem-hooks": "^1.0.2-1",
+    "react-hook-form": "^7.34.2",
     "react-hot-loader": "^4.13.0",
+    "react-markdown": "^8.0.3",
     "react-router-dom": "^5.3.0",
     "recoil": "^0.6.1",
+    "remark-gfm": "^3.0.1",
     "styled-components": "^5.3.3"
   }
 }
