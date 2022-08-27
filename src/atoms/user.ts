@@ -12,16 +12,14 @@ export const userAtom = atom<User | null>({
     key: 'npwd-advertisements:defaultUser',
     get: async () => {
       try {
-        const resp = await fetchNui<ServerPromiseResp<User>>(AdvertisementsEvents.GetUser);
+        const user = await fetchNui<User>(AdvertisementsEvents.GetUser);
 
-        console.log({ resp });
-
-        if (!resp.data) {
+        if (!user) {
           console.log('no response data (user)');
           return null;
         }
 
-        return resp.data;
+        return user;
       } catch {
         if (isEnvBrowser()) {
           return MockedCreator;

@@ -5,6 +5,7 @@
  *
  * @return returnData - A promise for the data sent back by the NuiCallbacks CB argument
  */
+import { ServerPromiseResp } from '@project-error/npwd-types';
 import { isEnvBrowser } from './misc';
 
 async function fetchNui<T = any, D = any>(eventName: string, data?: D, mockResp?: T): Promise<T> {
@@ -26,10 +27,13 @@ async function fetchNui<T = any, D = any>(eventName: string, data?: D, mockResp?
     : `https://${resourceName}/${eventName}`;
 
   const resp = await fetch(url, options);
+  const responseObj: ServerPromiseResp<T> = await resp.json();
 
-  const responseObj = await resp.json();
+  if (responseObj.status !== 'ok') {
+    throw new Error(responseObj.errorMsg);
+  }
 
-  return responseObj;
+  return responseObj.data as T;
 }
 
 export default fetchNui;

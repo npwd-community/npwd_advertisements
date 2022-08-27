@@ -651,6 +651,11 @@
   resolved "https://registry.yarnpkg.com/@project-error/npwd-types/-/npwd-types-1.3.4.tgz#1a3d2fcc64857968faa815b0af625c51c1fadb14"
   integrity sha512-av15qwRytjJ3b3pHbUZu5YTF2mYoz32OlfAxGBaF7orY8do65kWjQe+iq5Vnhy1+Vo6V1POY5XsE0o04BHJvog==
 
+"@project-error/pe-utils@^0.3.0":
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/@project-error/pe-utils/-/pe-utils-0.3.0.tgz#cf73551c0e7d32be51cba5e7171d1fd438a29088"
+  integrity sha512-E1oYDEBA7A3t0+ZabUENY98YAqS9zPDELnBI2lWgX2udTYK9PBl0VxY9LhjlvfHH43FOREV1HrwDp5ry1DkE1w==
+
 "@types/body-parser@*":
   version "1.19.2"
   resolved "https://registry.yarnpkg.com/@types/body-parser/-/body-parser-1.19.2.tgz#aea2059e28b7658639081347ac4fab3de166e6f0"
@@ -1317,7 +1322,7 @@ body-parser@1.19.2:
     raw-body "2.4.3"
     type-is "~1.6.18"
 
-body-parser@1.20.0:
+body-parser@1.20.0, body-parser@^1.20.0:
   version "1.20.0"
   resolved "https://registry.yarnpkg.com/body-parser/-/body-parser-1.20.0.tgz#3de69bd89011c11573d7bfee6a64f11b6bd27cc5"
   integrity sha512-DfJ+q6EPcGKZD1QWUjSpqp+Q7bDQTsQIF4zfUAtZ6qk+H/3/QRhg9CEp39ss+/T2vw0+HaidC0ecJj/DRLIaKg==
@@ -2603,11 +2608,12 @@ find-up@^5.0.0:
     locate-path "^6.0.0"
     path-exists "^4.0.0"
 
-fivem-mock-server@^0.0.0-3:
-  version "0.0.0-3"
-  resolved "https://registry.yarnpkg.com/fivem-mock-server/-/fivem-mock-server-0.0.0-3.tgz#6546daa79c99b5a00d935d0270db49ba0a3ed707"
-  integrity sha512-AuiwtZrMUOLlSc1k0wRjW9W1UBpUK2caytPPjqwRIZsQF8fHa47B8KRSXfzs64PiTdzkbUZR0H3oKQSa/OGPYQ==
+fivem-mock-server@^0.0.0-5:
+  version "0.0.0-5"
+  resolved "https://registry.yarnpkg.com/fivem-mock-server/-/fivem-mock-server-0.0.0-5.tgz#cad2f6a8160265efe745264a5c80c73e35cd5785"
+  integrity sha512-/uPXL94QAFIhJz7LBWDzUtmZr6Jul5jTTiedw8/F5TQVr1i55lE7FJK747/wtSku9pTq2RIqvp8sx3OkMVIJ3Q==
   dependencies:
+    body-parser "^1.20.0"
     cors "^2.8.5"
     express "^4.18.1"
 

@@ -1,4 +1,4 @@
-import { Error, ErrorRounded, ImageRounded, RefreshRounded } from '@mui/icons-material';
+import { ErrorRounded, ImageRounded, RefreshRounded } from '@mui/icons-material';
 import {
   Alert,
   Button,
@@ -14,39 +14,73 @@ import {
   Typography,
 } from '@mui/material';
 import { Box } from '@mui/system';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
+import { useHistory, useLocation, useParams } from 'react-router-dom';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { path } from '../../npwd.config';
 import { AdvertisementsEvents } from '../../shared/events';
-import { CreateAdvertisementInput } from '../../shared/types';
+import { Advertisement, CreateAdvertisementInput } from '../../shared/types';
+import { advertisementsAtom } from '../atoms/advertisements';
+import { userAtom } from '../atoms/user';
 import PresentationCard from '../components/PresentationCard';
+import { useLocaleStorageState } from '../hooks/useLocaleStorageState';
 import fetchNui from '../utils/fetchNui';
 import { MockedCreator } from '../utils/mocks';
 
+const initialValues: CreateAdvertisementInput = {
+  title: '',
+  description: '',
+  body: '',
+  image: '',
+  isCallable: false,
+  isPosition: false,
+};
+
 const Create = () => {
-  const phoneNumber = '072 02828';
+  const history = useHistory();
+  const user = useRecoilValue(userAtom);
+  const updateAdvertisements = useSetRecoilState(advertisementsAtom);
+
+  const [defaultValues, setDefaultValues] = useLocaleStorageState<CreateAdvertisementInput>(
+    'npwd-create-advertisement',
+    initialValues,
+  );
+
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isPreview, setIsPreview] = useState(false);
 
-  const { getValues, control, handleSubmit, formState } = useForm<CreateAdvertisementInput>({
-    defaultValues: {
-      title: '',
-      description: '',
-      body: '',
-      image: '',
-      isCallable: false,
-      isPosition: false,
-    },
+  const params = useParams();
+  const location = useLocation();
+  const query = new URLSearchParams(location.search);
+
+  const { getValues, control, handleSubmit, setValue, reset } = useForm<CreateAdvertisementInput>({
+    defaultValues,
   });
+
+  useEffect(() => {
+    const image = query.get('image') || defaultValues.image;
+    setValue('image', image);
+    return () => {
+      const vals = getValues();
+      setDefaultValues(vals);
+    };
+  }, []);
 
   const onSubmit = async (values: CreateAdvertisementInput) => {
     setIsLoading(true);
 
     try {
-      await fetchNui<unknown, CreateAdvertisementInput>(
+      const newAdvertisement = await fetchNui<Advertisement, CreateAdvertisementInput>(
         AdvertisementsEvents.CreateAdvertisement,
         values,
       );
+
+      updateAdvertisements((prev) => [...prev, newAdvertisement]);
+      reset(initialValues);
+
+      history.push(path);
       setError('');
     } catch (error) {
       setError(error.message);
@@ -55,15 +89,24 @@ const Create = () => {
     setIsLoading(false);
   };
 
+  const handleGetImage = () => {
+    history.push(`/camera?referal=${path}/create`);
+  };
+
   if (isPreview) {
     return (
       <>
         <PresentationCard
+          isPreview
           advertisement={{
             ...getValues(),
             id: -1,
             creator: MockedCreator,
-            phoneNumber,
+            phoneNumber: user?.phoneNumber ?? 'Unknown',
+            waypoint: {
+              x: 0,
+              y: 0,
+            },
           }}
         />
 
@@ -115,18 +158,25 @@ const Create = () => {
           )}
         />
 
-        <TextField
-          placeholder="Image"
-          fullWidth
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton>
-                  <ImageRounded />
-                </IconButton>
-              </InputAdornment>
-            ),
-          }}
+        <Controller
+          name="image"
+          control={control}
+          render={({ field }) => (
+            <TextField
+              placeholder="Image"
+              fullWidth
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton onClick={handleGetImage}>
+                      <ImageRounded />
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+              {...field}
+            />
+          )}
         />
 
         <Controller

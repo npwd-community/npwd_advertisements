@@ -7,7 +7,6 @@ import PresentationCard from '../components/PresentationCard';
 
 const Advertisements = () => {
   const advertisements = useRecoilValue(advertisementsAtom);
-  const user = useRecoilValue(userAtom);
   const [search, setSearch] = useState('');
 
   const filteredAdvertisement = advertisements.filter((advertisement) =>
@@ -25,9 +24,7 @@ const Advertisements = () => {
         />
 
         {filteredAdvertisement.map((advertisement) => (
-          <div key={advertisement.id}>
-            <PresentationCard advertisement={advertisement} />
-          </div>
+          <PresentationCard advertisement={advertisement} key={advertisement.id} />
         ))}
       </Stack>
     </div>

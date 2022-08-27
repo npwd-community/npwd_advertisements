@@ -107,7 +107,6 @@ const description = `
 `;
 
 export const MockedCreator: User = {
-  id: 1,
   name: 'Kalle Kula',
   citizenId: 'y121asdk',
 };

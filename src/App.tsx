@@ -18,6 +18,11 @@ import Header, { HEADER_HEIGHT } from './components/Header';
 import { path } from '../npwd.config';
 import Advertisements from './views/Advertisements';
 import Create from './views/Create';
+import { AdvertisementsEvents } from '../shared/events';
+import { RecoilRoot, useSetRecoilState } from 'recoil';
+import { advertisementsAtom } from './atoms/advertisements';
+import fetchNui from './utils/fetchNui';
+import { Advertisement } from '../shared/types';
 
 const Container = styled(Paper)`
   flex: 1;
@@ -37,15 +42,6 @@ const Content = styled.div`
   overflow: auto;
 `;
 
-const LinkItem = styled(Link)`
-  font-family: sans-serif;
-  text-decoration: none;
-`;
-
-const Footer = styled.footer`
-  margin-top: auto;
-`;
-
 interface AppProps {
   theme: Theme;
   i18n: i18n;
@@ -53,12 +49,24 @@ interface AppProps {
 }
 
 const App = (props: AppProps) => {
+  const setAdvertisements = useSetRecoilState(advertisementsAtom);
   const { pathname } = useLocation();
   const [page, setPage] = useState(pathname);
 
   const handleChange = (_e: any, newPage: any) => {
     setPage(newPage);
   };
+
+  useNuiEvent({
+    event: AdvertisementsEvents.UpdateNUI,
+    callback: async () => {
+      console.log('Updating advertisements from UpdateNUI event!');
+      const advertisements = await fetchNui<Advertisement[]>(
+        AdvertisementsEvents.GetAdvertisements,
+      );
+      setAdvertisements(advertisements);
+    },
+  });
 
   return (
     <StyledEngineProvider injectFirst>
@@ -98,9 +106,11 @@ const App = (props: AppProps) => {
 };
 
 const WithProviders: React.FC<AppProps> = (props) => (
-  <NuiProvider>
-    <App {...props} />
-  </NuiProvider>
+  <RecoilRoot override key="npwd_advertisements">
+    <NuiProvider>
+      <App {...props} />
+    </NuiProvider>
+  </RecoilRoot>
 );
 
 export default WithProviders;

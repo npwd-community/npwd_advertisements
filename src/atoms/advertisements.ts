@@ -12,19 +12,18 @@ export const advertisementsAtom = atom<Advertisement[]>({
     key: 'npwd-advertisements:defaultAdvertisements',
     get: async () => {
       try {
-        const resp = await fetchNui<ServerPromiseResp<Advertisement[]>>(
+        const advertisements = await fetchNui<Advertisement[]>(
           AdvertisementsEvents.GetAdvertisements,
         );
 
-        console.log({ resp });
-
-        if (!resp.data) {
+        if (!advertisements) {
           console.log('no response data (advertisements)');
           return [];
         }
 
-        return resp.data;
-      } catch {
+        return advertisements;
+      } catch (error) {
+        console.error(error);
         if (isEnvBrowser()) {
           return MockedAdvertisements;
         }
