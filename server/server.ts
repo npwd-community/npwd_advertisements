@@ -1,5 +1,5 @@
 import { MockServer } from 'fivem-mock-server';
-import { AdvertisementsEvents, ReportReason, reportReasons } from '../shared/events';
+import { AdvertisementsEvents, ReportReason } from '../shared/events';
 import {
   Advertisement,
   ReportAdvertisementInput,
@@ -7,7 +7,34 @@ import {
   User,
 } from '../shared/types';
 
-console.log('Server started ..');
+import { Server as ESXServer } from 'esx.js';
+import { Server as QBServer } from 'qbcore.js';
+
+const exp = global.exports;
+
+export let ESX: ESXServer = null;
+export let QBCore: QBServer = null;
+
+let FRAMEWORK: 'qb' | 'esx' | 'standalone' = 'standalone';
+
+if (GetResourceState('qb-core') === 'started') {
+  FRAMEWORK = 'qb';
+}
+
+if (GetResourceState('es_extended') === 'started') {
+  FRAMEWORK = 'esx';
+}
+
+console.log('Loaded framework "' + FRAMEWORK + '"');
+
+switch (FRAMEWORK) {
+  case 'esx':
+    ESX = exp['es_extended'].getSharedObject();
+    break;
+  case 'qb':
+    QBCore = exp['qb-core'].GetCoreObject();
+    break;
+}
 
 new MockServer({
   isActive: false,
@@ -56,25 +83,48 @@ const Store: IStore = {
 };
 
 setTimeout(() => {
-  /* On restart, sync data */
-  emitNet(AdvertisementsEvents.UpdateNUI, -1);
+  if (GetResourceState('npwd') == 'started') {
+    emitNet(AdvertisementsEvents.UpdateNUI, -1);
+  }
 }, 200);
 
 const getPlayerBySource = (source: number, withPhoneNumber?: boolean): User => {
-  //@ts-ignore
-  if ('qb-started' === 'started') {
-    // QBCore.getPLayer
-    return;
+  if (FRAMEWORK === 'qb') {
+    const player = QBCore.Functions.GetPlayer(source);
+
+    if (!player) {
+      throw new Error('Player could not be found');
+    }
+
+    const { citizenid, charinfo } = player.PlayerData;
+
+    return {
+      citizenId: citizenid,
+      name: `${charinfo.firstname} ${charinfo.lastname}`,
+      phoneNumber: withPhoneNumber ? charinfo.phone.toString() : '',
+    };
   }
 
-  //@ts-ignore
-  if ('esx-started' === 'started') {
-    // QBCore.getPLayer
-    return;
+  if (FRAMEWORK === 'esx') {
+    const player = ESX.GetPlayerFromId(source);
+
+    if (!player) {
+      throw new Error('Player could not be found');
+    }
+
+    let phoneNumber: string;
+    if (GetResourceState('npwd') == 'started' && withPhoneNumber) {
+      phoneNumber = exp['npwd'].getPhoneNumber(source);
+    }
+
+    return {
+      citizenId: player.identifier,
+      name: player.name,
+      phoneNumber,
+    };
   }
 
   const name = GetPlayerName(source.toString());
-
   return {
     name,
     citizenId: source.toString(),
@@ -91,9 +141,12 @@ onNet(AdvertisementsEvents.GetUser, (responseEvent: string) => {
   });
 });
 
-onNet(AdvertisementsEvents.GetAdvertisements, (responseEvent: string) => {
+onNet(AdvertisementsEvents.GetAdvertisements, async (responseEvent: string) => {
   const src = source;
   const advertisements = Store.Advertisements.filter((advertisment) => !advertisment.deletedAt);
+
+  await new Promise((resolve) => setTimeout(resolve, 2000));
+
   setImmediate(() => {
     emitNet(responseEvent, src, { status: 'ok', data: advertisements });
   });

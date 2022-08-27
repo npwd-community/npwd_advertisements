@@ -1,22 +1,18 @@
+import packageJson from './package.json';
 import App from './src/App';
 import { AppIcon } from './icon';
-
-const defaultLanguage = 'en';
-const localizedAppName = {
-  en: 'APP_NAME',
-};
 
 interface Settings {
   language: 'en';
 }
 
-export const path = '/npwd_app_template';
+export const path = `/${packageJson.name}`;
 export default (settings: Settings) => ({
-  id: 'APP_NAME',
+  id: 'ADVERTISEMENTS',
   path,
-  nameLocale: localizedAppName[settings?.language ?? defaultLanguage],
+  nameLocale: 'Advertisements',
   color: '#fff',
-  backgroundColor: '#333',
+  backgroundColor: '#fbc02d',
   icon: AppIcon,
   app: App,
 });

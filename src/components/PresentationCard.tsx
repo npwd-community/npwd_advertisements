@@ -194,6 +194,7 @@ const PresentationCard = ({ advertisement, onClose, isPreview }: PresentationCar
         disablePortal
         hideBackdrop
         fullScreen
+        PaperProps={{ elevation: 0, square: true }}
         sx={{ position: 'absolute' }}
       >
         <DialogTitle>

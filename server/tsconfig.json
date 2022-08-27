@@ -1,8 +1,10 @@
 {
   "compilerOptions": {
-    "types": ["@citizenfx/server"],
+    "types": ["@citizenfx/server", "esx.js", "qbcore.js"],
     "target": "es6",
-    "allowJs": true
+    "allowJs": true,
+    "resolveJsonModule": true,
+    "moduleResolution": "node"
   },
   "include": [".", "../shared"]
 }
