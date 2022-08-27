@@ -46,6 +46,7 @@ import { AdvertisementsEvents, ReportReason, reportReasons } from '../../shared/
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { advertisementsAtom } from '../atoms/advertisements';
 import { userAtom } from '../atoms/user';
+import { useHistory } from 'react-router-dom';
 
 const StyledCardContent = styled(CardContent)`
   word-break: break-all;
@@ -62,6 +63,7 @@ interface PresentationCardProps {
 }
 
 const PresentationCard = ({ advertisement, onClose, isPreview }: PresentationCardProps) => {
+  const history = useHistory();
   const user = useRecoilValue(userAtom);
   const setAdvertisements = useSetRecoilState(advertisementsAtom);
   const isCreator = advertisement.creator.citizenId === user?.citizenId;
@@ -122,26 +124,12 @@ const PresentationCard = ({ advertisement, onClose, isPreview }: PresentationCar
 
   const handleCall = async () => {
     if (isPreview) return;
-    try {
-      await fetchNui<boolean, SetWaypointInput>(AdvertisementsEvents.SetWaypointAdvertisement, {
-        waypoint: advertisement.waypoint,
-      });
-      setAdvertisements((prev) => prev.filter((adv) => adv.id !== advertisement.id));
-    } catch (error) {
-      console.error(error);
-    }
+    history.push(`/phone/dial?number=${advertisement.creator.phoneNumber}`);
   };
 
-  const handleChat = async () => {
+  const handleChat = () => {
     if (isPreview) return;
-    try {
-      await fetchNui<boolean, SetWaypointInput>(AdvertisementsEvents.SetWaypointAdvertisement, {
-        waypoint: advertisement.waypoint,
-      });
-      setAdvertisements((prev) => prev.filter((adv) => adv.id !== advertisement.id));
-    } catch (error) {
-      console.error(error);
-    }
+    history.push(`/messages/new?phoneNumber=${advertisement.creator.phoneNumber}`);
   };
 
   const handleSetWaypoint = async () => {
