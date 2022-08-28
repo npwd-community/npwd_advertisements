@@ -66,7 +66,9 @@ const hotReloadConfig = {
   files: ['/dist/server.js', '/dist/client.js', '/dist/html/index.js'],
 };
 
-global.exports['hotreload'].add(hotReloadConfig);
+if (GetResourceState('hotreload') === 'started') {
+  global.exports['hotreload'].add(hotReloadConfig);
+};
 
 type ReportStore = {
   [index in ReportReason]: Record<string, User>;
