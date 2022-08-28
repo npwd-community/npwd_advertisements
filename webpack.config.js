@@ -63,7 +63,7 @@ module.exports = {
         './config': './npwd.config',
       },
       remotes: {
-        layout: env.process.REACT_APP_IN_GAME
+        layout: process.env.REACT_APP_IN_GAME
           ? 'layout@https://cfx-nui-npwd/resources/html/remoteEntry.js'
           : 'layout@http://localhost:3000/remoteEntry.js',
       },
