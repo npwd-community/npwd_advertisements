@@ -10,9 +10,9 @@ import {
   IconButton,
   InputAdornment,
   Stack,
-  TextField,
   Typography,
 } from '@mui/material';
+import { TextField } from 'layout/ui'
 import { Box } from '@mui/system';
 import React, { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
@@ -150,6 +150,7 @@ const Create = () => {
           render={({ field, fieldState }) => (
             <TextField
               placeholder="Title"
+              variant="outlined"
               fullWidth
               error={Boolean(fieldState.error)}
               helperText={fieldState.error?.message ?? ''}
@@ -165,6 +166,7 @@ const Create = () => {
             <TextField
               placeholder="Image"
               fullWidth
+              variant="outlined"
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
@@ -199,6 +201,7 @@ const Create = () => {
           render={({ field, fieldState }) => (
             <TextField
               placeholder="Description"
+              variant="outlined"
               fullWidth
               error={Boolean(fieldState.error)}
               helperText={fieldState.error?.message ?? ''}
@@ -230,6 +233,7 @@ const Create = () => {
             <TextField
               placeholder="Body"
               fullWidth
+              variant="outlined"
               error={Boolean(fieldState.error)}
               helperText={fieldState.error?.message ?? ''}
               rows={6}

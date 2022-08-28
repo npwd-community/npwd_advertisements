@@ -1,4 +1,5 @@
-import { Stack, TextField } from '@mui/material';
+import { Stack } from '@mui/material';
+import { SearchField } from 'layout/ui';
 import React, { useState } from 'react';
 import { useRecoilValue } from 'recoil';
 import { advertisementsAtom } from '../atoms/advertisements';
@@ -16,11 +17,10 @@ const Advertisements = () => {
   return (
     <div>
       <Stack spacing={1.5}>
-        <TextField
-          fullWidth
+        <SearchField
           placeholder="Search .."
           value={search}
-          onChange={(event) => setSearch(event.target.value)}
+          onChange={(event: any) => setSearch(event.target.value)}
         />
 
         {filteredAdvertisement.map((advertisement) => (
