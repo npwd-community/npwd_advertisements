@@ -14,7 +14,6 @@ const isDevelopment = process.env.NODE_ENV === 'development';
 /* Probably bad way of fixing this */
 delete dependencies['@emotion/styled'];
 delete dependencies['@mui/material'];
-delete dependencies['@mui/styles'];
 
 module.exports = {
   entry: './src/bootstrap.ts',
@@ -62,6 +61,11 @@ module.exports = {
       filename: 'remoteEntry.js',
       exposes: {
         './config': './npwd.config',
+      },
+      remotes: {
+        layout: env.process.REACT_APP_IN_GAME
+          ? 'layout@https://cfx-nui-npwd/resources/html/remoteEntry.js'
+          : 'layout@http://localhost:3000/remoteEntry.js',
       },
       shared: {
         ...dependencies,
